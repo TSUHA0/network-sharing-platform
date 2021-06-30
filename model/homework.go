@@ -29,6 +29,8 @@ type Answer struct {
 	CourseId   string   `bson:"course_id"`
 	HomeworkId string   `bson:"homework_id"`
 	Answers    []string `bson:"answers"`
+	Grade      string   `bson:"grade"`
+	Createtime string   `bson:"createtime"`
 }
 
 var homeworkCollection *mongo.Collection = nil
@@ -64,7 +66,7 @@ func InsertHomework(data *Homework) int {
 	for i := 0; i < len(data.Questions); i++ {
 		data.Questions[i].Id = bson.NewObjectId().Hex()
 	}
-	insertResult, err := homeworkCollection.InsertOne(context.TODO(), data)
+	insertResult, err := homeworkCollection.InsertOne(context.TODO(), &data)
 	if err != nil {
 		fmt.Println("create a homework fail")
 		log.Fatal("create a homework fail,", err)
@@ -85,6 +87,26 @@ func InsertHomeworkAnswer(data *Answer) int {
 	}
 	data.HomeworkId = homework.Id
 	data.UserId = "0"
+	insertResult, err := answerCollection.InsertOne(context.TODO(), data)
+	if err != nil {
+		fmt.Println("insert a homework answer fail")
+		log.Fatal("insert a homework answer  fail,", err)
+		return errmsg.ERROR
+	}
+	fmt.Println("create a homework answer document: ", insertResult.InsertedID.(string))
+	return errmsg.SUCCESS
+}
+
+//添加用户答案
+func InsertUserAnswer(data *Answer) int {
+	data.Id = bson.NewObjectId().Hex()
+	homework, msg := GetHomework(data.CourseId)
+	if msg != errmsg.SUCCESS {
+		fmt.Println("insert homework answer:get a homework fail")
+		log.Fatal("insert homework answer:get a homework  fail")
+		return errmsg.ERROR
+	}
+	data.HomeworkId = homework.Id
 	insertResult, err := answerCollection.InsertOne(context.TODO(), data)
 	if err != nil {
 		fmt.Println("insert a homework answer fail")

@@ -16,10 +16,11 @@ import (
 var userCollection *mongo.Collection = nil
 
 type User struct {
-	ID       string `bson:"_id"`
-	Username string `bson:"username"`
-	Password string `bson:"password"`
-	Role     int    `bson:"role"`
+	ID           string   `bson:"_id"`
+	Username     string   `bson:"username"`
+	Password     string   `bson:"password"`
+	Role         int      `bson:"role"`
+	Subscription []string `bson:"subscription"`
 }
 
 // 查询用户是否存在

@@ -5,4 +5,6 @@ func InitModel() {
 	commentInit()
 	courseInit()
 	HomepageInit()
+	homeworkInit()
+	answerInit()
 }

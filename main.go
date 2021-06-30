@@ -11,13 +11,16 @@ import (
 func testInsertCourse() {
 	userId := "571094e2976aeb1df982ad4e"
 	course := model.Courses{
-		"0",
 		bson.NewObjectId().Hex(),
+		userId,
 		"goland",
 		"goland入门学习",
 		make([]model.Lesson, 0),
 		"",
+		"",
 		"2006-01-02 15:04:05",
+		"2006-01-02 15:04:05",
+		"2016-01-02 15:04:05",
 	}
 
 	model.CreateCourse(&course, userId)
@@ -93,6 +96,7 @@ func testInsertUser() {
 		"raoxiang",
 		"raoxiang",
 		1,
+		make([]string, 0),
 	}
 	model.InsertUser(&data)
 }
@@ -126,6 +130,29 @@ func testSearchCourse() {
 	}
 }
 
+func testInsertHomework() {
+	courseId := "60d1e8442eb5a4643455c39a"
+	hw := model.Homework{
+		bson.NewObjectId().String(),
+		courseId,
+		make([]model.Question, 0),
+	}
+	model.InsertHomework(&hw)
+}
+
+func testInsertAnswer() {
+	answer := model.Answer{
+		"0",
+		"60d04db7b1f7f22e38216b6a",
+		"60d1e8442eb5a4643455c39a",
+		"60dbe4a32eb5a427e0889eaa",
+		make([]string, 0),
+		"0",
+		"2006-01-02 15:04:05",
+	}
+	model.InsertHomeworkAnswer(&answer)
+}
+
 func main() {
 
 	//testCreateComments()
@@ -134,7 +161,9 @@ func main() {
 	//testDeleteLesson()
 	model.InitDb()
 	model.InitModel()
-	testSearchCourse()
+	//testInsertHomework()
+	//testInsertAnswer()
+	//testSearchCourse()
 	//testTiming()
 	//TestGetAllCourse()
 	//now, _ := common.GetNowTime()
@@ -142,7 +171,7 @@ func main() {
 	//testInsertUser()
 	//testDeleteLesson()
 	//testInsertLesson()
-	testEditLesson()
+	//testEditLesson()
 	//testUpdateCourse()
 	//testInsertCourse()
 	//testDeleteCourse()

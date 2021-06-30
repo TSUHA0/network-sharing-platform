@@ -26,7 +26,10 @@ type Courses struct {
 	Introduction string   `bson:"introduction"`
 	Subject      []Lesson `bson:"subject"`
 	Images       string   `bson:"images"`
+	Tag          string   `bson:tag`
 	Createtime   string   `bson:"createtime"  json:"createtime"`
+	Startime     string   `bson:"startime"`
+	Endtime      string   `bson:"Endtime"`
 }
 
 var coursesCollection *mongo.Collection = nil

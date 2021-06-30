@@ -106,16 +106,32 @@ func GetUsers(c *gin.Context) {
 // 修改用户
 func UpdateUser(c *gin.Context) {
 	var data model.User
-	id := c.Param("_id")
+	id := c.Param("id")
 	c.ShouldBindJSON(&data)
-	code := model.CheckUser(&data)
+
+	tokenHeader := c.Request.Header.Get("Authorization")
+	userId, _, role, code := middleware.ParseToken(tokenHeader)
+
 	if code != errmsg.SUCCESS {
+		code = errmsg.ERROR_USER_DEL_ERROR
 		error := errmsg.SetErrorResponse(c.Request.Method, c.Request.URL.Path, code,
 			errmsg.GetErrMsg(code))
 		c.JSON(http.StatusBadRequest, error)
 		return
 	}
-	model.UpdateUser(id, &data)
+
+	if role >= 2 && userId == id {
+		code = model.CheckUser(&data)
+	} else if role < 2 && userId != id {
+		code = model.CheckUser(&data)
+	} else {
+		code = errmsg.ERROR_USER_NOT_RIGHT
+		error := errmsg.SetErrorResponse(c.Request.Method, c.Request.URL.Path, code,
+			errmsg.GetErrMsg(code))
+		c.JSON(http.StatusBadRequest, error)
+		return
+	}
+	code = model.UpdateUser(id, &data)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),
